@@ -1,8 +1,9 @@
 class ScrapeTeamPlayers
   attr_reader :tables, :players, :url
 
-  def initialize(url = nil)
-    @url = url || 'https://fbref.com/en/squads/b2b47a98/2020-2021/Newcastle-United-Stats'
+  def initialize(attrs = {})
+    @url = attrs[:url] || 'https://fbref.com/en/squads/b2b47a98/2020-2021/Newcastle-United-Stats'
+    @players = attrs[:players]
     @tables = [
       { id: 'stats_standard_10728', columns: ['MP', 'xG'] },
       { id: 'stats_keeper_10728', columns: [] },
@@ -16,12 +17,9 @@ class ScrapeTeamPlayers
       { id: 'stats_playing_time_10728', columns: [] },
       { id: 'stats_misc_10728', columns: [] }
     ]
-    @players = {}
   end
 
-
   def call
-
     # html = File.open('scraper/test.html')
     # squad_url = 'https://fbref.com/en/squads/b2b47a98/2020-2021/Newcastle-United-Stats'
     html = URI.open(url).read
@@ -50,7 +48,6 @@ class ScrapeTeamPlayers
         end
       end
     end
-
-    p @players
+    @players
   end
 end
