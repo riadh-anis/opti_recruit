@@ -1,19 +1,24 @@
 require 'nokogiri'
 require 'open-uri'
+require_relative 'scrape_teams'
 require_relative 'scrape_team_players'
 
-
 @players = {}
-# prem_url = 'https://fbref.com/en/comps/9/10728/2020-2021-Premier-League-Stats'
+# url = 'https://fbref.com/en/'
 # html = URI.open(url).read
-html = File.open('scraper/league.html')
+html = File.open('scraper/home.html')
 doc = Nokogiri::HTML.parse(html)
 
-doc.search('#results107281_overall tbody tr').each do |row|
-  link = row.search('a').first
-  url = link.attributes['href'].value
-
-  puts "Scraping info for: #{link.text.strip}"
-  @players = ScrapeTeamPlayers.new(url: url, players: @players).call
+doc.search('#leagues_primary div div p a')[1..-1].each do |comp|
+  name = comp.text.strip
+  puts "Scraping #{name}..."
+  url = comp.attributes['href'].value
+  @players = ScrapeTeams.new(url: url, players: @players).call
+  p @players
   sleep(3)
 end
+
+
+
+# url = 'https://fbref.com/en/comps/9/10728/2020-2021-Premier-League-Stats'
+#

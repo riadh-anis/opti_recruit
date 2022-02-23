@@ -1,8 +1,9 @@
 class ScrapeTeamPlayers
-  attr_reader :tables, :players, :url
+  attr_reader :tables, :players, :url, :base_url
 
   def initialize(attrs = {})
-    @url = attrs[:url] || 'https://fbref.com/en/squads/b2b47a98/2020-2021/Newcastle-United-Stats'
+    @url = attrs[:url] || '/en/squads/b2b47a98/2020-2021/Newcastle-United-Stats'
+    @base_url = 'https://fbref.com'
     @players = attrs[:players]
     @tables = [
       { id: 'stats_standard_10728', columns: ['MP', 'xG'] },
@@ -22,7 +23,7 @@ class ScrapeTeamPlayers
   def call
     # html = File.open('scraper/test.html')
     # squad_url = 'https://fbref.com/en/squads/b2b47a98/2020-2021/Newcastle-United-Stats'
-    html = URI.open(url).read
+    html = URI.open(base_url + url).read
     doc = Nokogiri::HTML.parse(html)
 
     tables.each do |table|
