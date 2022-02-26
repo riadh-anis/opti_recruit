@@ -1,8 +1,9 @@
 require 'nokogiri'
 require 'open-uri'
 require 'csv'
-require_relative 'scrape_teams'
-require_relative 'scrape_team_players'
+# require_relative 'scrape_teams'
+# require_relative 'scrape_team_players'
+# require 'pry-byebug'
 
 class FbrefScrape
   def initialize
@@ -44,13 +45,16 @@ class FbrefScrape
       filepath = "raw_data/fbref/fbref_#{year}.csv"
       next unless File.exist?(filepath)
 
-      CSV.foreach(filepath, headers: :first_row) do |row|
+      CSV.foreach(filepath, headers: :first_row, header_converters: :symbol) do |row|
         @players[year] = {} unless @players.key?(year)
-        player = row[:name]
+        player = row[:name].to_s
 
-        @players[year][player] = {} unless @players[year].key?(player)
-        @players[year][player][col_name] = value
+        @players[year][player] = row.to_h.except(:name)
       end
     end
+    @players
   end
 end
+
+
+# p FbrefScrape.new.load_from_csv

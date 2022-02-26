@@ -1,7 +1,8 @@
-# require 'open-uri'
-# require 'nokogiri'
-# require 'pry-byebug'
+require 'open-uri'
+require 'nokogiri'
+require 'pry-byebug'
 require 'httparty'
+# require_relative 'scrape_teams'
 
 YEAR_END = 2022
 YEAR_BEG = 2016
@@ -31,14 +32,17 @@ class ScrapeTeamPlayers
   def call
     # sleep(rand(1..3)) # hoping not to get blocked
     begin
-      # html = File.open('scraper/test.html', "encoding" => 'utf-8')
+      html = File.open('scraper/test2.html')
       # html = URI.open(base_url + url).read
-      html = HTTParty.get(base_url + url).body
+      # p full_url = base_url + url
+      # html = HTTParty.get(full_url).body
       doc = Nokogiri::HTML.parse(html)
 
       title = doc.search('#info h1').text.strip
       title_match = title.match(/^(?<first>\d{4})-?(?<second>\d{4}?)/)
       @year = title_match[:second].empty? ? title_match[:first] : title_match[:second]
+
+      puts title
 
       # skip if current year
       unless title.match?(/#{YEAR_END}/)
@@ -49,6 +53,7 @@ class ScrapeTeamPlayers
           table_element = doc.search('table').find do |element|
             element.attributes['id'].value.match?(/#{table[:id]}/)
           end
+          next unless table_element
 
           headers = {}
           header = table_element.search('thead tr').last
@@ -58,7 +63,6 @@ class ScrapeTeamPlayers
             end
           end
 
-          # binding.pry
           table_element.search('tbody tr').each do |row|
             # player = row.search('th').first.text.encode('UTF-8', 'binary', invalid: :replace, undef: :replace).strip
             player = row.search('th').first.text.strip
@@ -77,16 +81,8 @@ class ScrapeTeamPlayers
           end
         end
       end
-
-      # checks previous seasons
-      prev_link = doc.search('.prevnext a').first
-      prev_season_url = prev_link.attributes['href'].value
-      unless prev_season_url.match?(/#{YEAR_BEG}/) || prev_link.text.strip.match?(/Next/)
-        puts "Scraping: #{prev_season_url}"
-        @players = ScrapeTeamPlayers.new(url: prev_season_url, players: @players).call
-      end
-    rescue => ex
-      puts "**** HTTP Error: #{ex.inspect} *****"
+    rescue => e
+      puts "**** HTTP Error: #{e.inspect} *****"
       puts
     end
 
@@ -95,4 +91,4 @@ class ScrapeTeamPlayers
 end
 
 # "Test:"
-# p ScrapeTeamPlayers.new.call
+p ScrapeTeamPlayers.new.call
