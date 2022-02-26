@@ -79,13 +79,13 @@ class ScrapeTeamPlayers
       end
 
       # checks previous seasons
-      prev_season_url = doc.search('.prevnext a').first.attributes['href'].value
-      unless prev_season_url.match?(/#{YEAR_BEG}/)
+      prev_link = doc.search('.prevnext a').first
+      prev_season_url = prev_link.attributes['href'].value
+      unless prev_season_url.match?(/#{YEAR_BEG}/) || prev_link.text.strip.match?(/Next/)
         puts "Scraping: #{prev_season_url}"
         @players = ScrapeTeamPlayers.new(url: prev_season_url, players: @players).call
       end
     rescue => ex
-      puts
       puts "**** HTTP Error: #{ex.inspect} *****"
       puts
     end

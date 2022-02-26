@@ -38,4 +38,19 @@ class FbrefScrape
       end
     end
   end
+
+  def load_from_csv
+    [2018, 2019, 2020, 2021].each do |year|
+      filepath = "raw_data/fbref/fbref_#{year}.csv"
+      next unless File.exist?(filepath)
+
+      CSV.foreach(filepath, headers: :first_row) do |row|
+        @players[year] = {} unless @players.key?(year)
+        player = row[:name]
+
+        @players[year][player] = {} unless @players[year].key?(player)
+        @players[year][player][col_name] = value
+      end
+    end
+  end
 end
