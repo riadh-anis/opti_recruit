@@ -1,7 +1,7 @@
-require 'open-uri'
-require 'nokogiri'
-# YEAR_END = 2022
-# YEAR_BEG = 2017
+# require 'open-uri'
+# require 'nokogiri'
+YEAR_END = 2022
+YEAR_BEG = 2018
 
 class ScrapeTeamPlayers
   attr_reader :tables, :players, :url, :base_url
@@ -27,8 +27,13 @@ class ScrapeTeamPlayers
 
   def call
     # html = File.open('scraper/test.html')
-    html = URI.open(base_url + url).read
-    doc = Nokogiri::HTML.parse(html)
+    sleep(rand(1..3)) # hoping not to get blocked
+    begin
+      html = URI.open(base_url + url).read
+      doc = Nokogiri::HTML.parse(html)
+    rescue OpenURI::HTTPError => ex
+      puts "HTTP Error: #{ex}"
+    end
 
     title = doc.search('#info h1').text.strip
     title_match = title.match(/^(?<first>\d{4})-?(?<second>\d{4}?)/)
@@ -75,5 +80,5 @@ class ScrapeTeamPlayers
   end
 end
 
-"Test:"
-p ScrapeTeamPlayers.new.call
+# "Test:"
+# p ScrapeTeamPlayers.new.call
