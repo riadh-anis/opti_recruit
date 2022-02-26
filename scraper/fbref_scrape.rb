@@ -20,7 +20,6 @@ class FbrefScrape
       comp_name = comp.text.strip
       puts "Scraping #{comp_name}..."
       url = comp.attributes['href'].value
-      p url
       @players = ScrapeTeams.new(url: url, players: @players).call
       # sleep(3)
     end

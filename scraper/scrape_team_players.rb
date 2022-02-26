@@ -1,6 +1,6 @@
-require 'open-uri'
-require 'nokogiri'
-require 'pry-byebug'
+# require 'open-uri'
+# require 'nokogiri'
+# require 'pry-byebug'
 require 'httparty'
 # require_relative 'scrape_teams'
 
@@ -25,24 +25,22 @@ class ScrapeTeamPlayers
       { id: 'stats_defense_', columns: ['Press', 'Tkl', 'Blocks', 'Int', 'Clr'] },
       { id: 'stats_possession_', columns: ['Succ', 'Att Pen', 'Prog'] },
       { id: 'stats_playing_time_', columns: [] },
-      { id: 'stats_misc_', columns: ['Won'] }
+      { id: 'stats_misc_', columns: ['Won', 'Crs', 'Int', 'TklW'] }
     ]
   end
 
   def call
     # sleep(rand(1..3)) # hoping not to get blocked
     begin
-      html = File.open('scraper/test2.html')
+      # html = File.open('scraper/test2.html')
       # html = URI.open(base_url + url).read
-      # p full_url = base_url + url
-      # html = HTTParty.get(full_url).body
+      full_url = base_url + url
+      html = HTTParty.get(full_url).body
       doc = Nokogiri::HTML.parse(html)
 
       title = doc.search('#info h1').text.strip
       title_match = title.match(/^(?<first>\d{4})-?(?<second>\d{4}?)/)
       @year = title_match[:second].empty? ? title_match[:first] : title_match[:second]
-
-      puts title
 
       # skip if current year
       unless title.match?(/#{YEAR_END}/)
@@ -91,4 +89,4 @@ class ScrapeTeamPlayers
 end
 
 # "Test:"
-p ScrapeTeamPlayers.new.call
+# p ScrapeTeamPlayers.new.call

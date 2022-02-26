@@ -53,3 +53,8 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+download_fbref:
+	@rm -rf app/assets/stylesheets
+	@curl -L https://github.com/riadh-anis/opti_recruit/hbref_scraped_data.zip > hbref_scraped_data.zip
+	@unzip hbref_scraped_data.zip -d raw_data/fbref && rm hbref_scraped_data.zip && mv fbref_2017.csv raw_data/fbref && mv fbref_2018.csv raw_data/fbref && mv fbref_2019.csv raw_data/fbref && mv fbref_2020.csv raw_data/fbref && mv fbref_2021.csv raw_data/fbref && mv fbref_2022.csv raw_data/fbref && mv fbref_2023.csv raw_data/fbref && mv fbref_2024.csv raw_data/fbref && mv fbref_2025.csv raw_data/fbref && mv fbref_2026.csv raw_data/fbref && mv fbref_2027.csv raw_data/fbref && mv fbref_2028.csv raw_data/fbref && mv fbref_2029.csv raw_data/fbref && mv fbref_2030.csv raw_data/fbref && mv fbref_2031.csv raw_data/fbref && mv fbref_2032.csv raw_data/fbref && mv fbref_2033.csv raw_data/fbref && mv fbref_2034.csv raw_data/fbref && mv fbref_2035.csv raw_data/fbref && mv fbref_2036.csv raw_data/fbref && mv fbref_2037.csv raw_data/fbref && mv fbref_2038.csv raw_data/fbref && mv fbref_2039.csv raw_data/fbref && mv fbref_2040.csv raw_data/fbref && mv fbref_2041.csv raw_data/fbref && mv fbref_2042.csv raw_data/fbref && mv fbref_2043.csv raw_data/fbref && mv fbref_2044.csv raw_data/fbref && mv fbref_2045.csv raw_data/fbref && mv fbref_2046.csv raw_data/fbref && mv fbref_2047.csv raw_data/fbref && mv fbref_2048.csv raw_data
