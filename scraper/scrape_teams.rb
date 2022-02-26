@@ -15,9 +15,9 @@ class ScrapeTeams
     table.search('tbody tr').each do |row|
       link = row.search('a').first
       url = link.attributes['href'].value
-      puts "Scraping info for: #{link.text.strip}"
+      puts "Scraping: #{link.text.strip}"
       @players = ScrapeTeamPlayers.new(url: url, players: @players).call
-      sleep(3) # don't get block plz
+      sleep(rand(5..10)) # don't get block plz
     end
     @players
   end
