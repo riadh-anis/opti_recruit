@@ -3,6 +3,7 @@ require 'open-uri'
 require 'csv'
 require_relative 'scrape_teams'
 require_relative 'scrape_team_players'
+
 class FbrefScrape
   def initialize
     @players = {}
@@ -14,7 +15,7 @@ class FbrefScrape
     html = File.open('scraper/home.html')
     doc = Nokogiri::HTML.parse(html)
 
-    doc.search('#leagues_primary div div p a')[1..1].each do |comp|
+    doc.search('#leagues_primary div div p a')[1..-1].each do |comp|
       comp_name = comp.text.strip
       puts "Scraping #{comp_name}..."
       url = comp.attributes['href'].value
