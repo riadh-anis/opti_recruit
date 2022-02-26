@@ -1,5 +1,7 @@
-# require 'open-uri'
-# require 'nokogiri'
+require 'open-uri'
+require 'nokogiri'
+require 'pry-byebug'
+
 YEAR_END = 2022
 YEAR_BEG = 2018
 
@@ -17,7 +19,7 @@ class ScrapeTeamPlayers
       { id: 'stats_shooting_', columns: [] },
       { id: 'stats_passing_', columns: [] },
       { id: 'stats_passing_types_', columns: [] },
-      { id: 'stats_gca_', columns: [] },
+      { id: 'stats_gca_', columns: ['GCA'] },
       { id: 'stats_defense_', columns: ['Blocks'] },
       { id: 'stats_possession_', columns: [] },
       { id: 'stats_playing_time_', columns: [] },
@@ -26,54 +28,66 @@ class ScrapeTeamPlayers
   end
 
   def call
-    # html = File.open('scraper/test.html')
     sleep(rand(1..3)) # hoping not to get blocked
     begin
-      html = URI.open(base_url + url).read
+      html = File.open('scraper/test.html', "encoding" => 'utf-8')
+      # html = URI.open(base_url + url).read
       doc = Nokogiri::HTML.parse(html)
-    rescue OpenURI::HTTPError => ex
-      puts "HTTP Error: #{ex}"
-    end
 
-    title = doc.search('#info h1').text.strip
-    title_match = title.match(/^(?<first>\d{4})-?(?<second>\d{4}?)/)
-    @year = title_match[:second].empty? ? title_match[:first] : title_match[:second]
+      title = doc.search('#info h1').text.strip
+      title_match = title.match(/^(?<first>\d{4})-?(?<second>\d{4}?)/)
+      @year = title_match[:second].empty? ? title_match[:first] : title_match[:second]
 
-    # skip if current year
-    unless title.match?(/#{YEAR_END}/)
-      tables.each do |table|
-        next unless table[:columns]&.any?
 
-        table_element = doc.xpath("//table[starts-with(@id, #{table[:id]})]")
 
-        headers = {}
-        header = table_element.search('thead tr').last
-        header.search('th').map.with_index do |tr, index|
-          headers[index - 1] = tr.text.strip if table[:columns].include?(tr.text.strip)
-        end
+      # skip if current year
+      unless title.match?(/#{YEAR_END}/)
+        tables.each do |table|
+          next unless table[:columns]&.any?
 
-        table_element.search('tbody tr').each do |row|
-          player = row.search('th').first.text.encode('UTF-8', 'binary', invalid: :replace, undef: :replace).strip
-          next if player.match?(/\d/)
+          # get the right table
+          table_element = doc.search('table').find do |element|
+            element.attributes['id'].value.match?(/#{table[:id]}/)
+          end
 
-          headers.each do |index, col|
-            player_row = row.search('td')[index]
-            value = player_row.text.strip
-            col_name = player_row.attributes["data-stat"].value
+          headers = {}
+          header = table_element.search('thead tr').last
+          header.search('th').map.with_index do |tr, index|
+            if table[:columns].include?(tr.text.strip)
+              p tr.text.strip
+              headers[index - 1] = tr.text.strip
+            end
+          end
 
-            @players[@year] = {} unless @players.key?(@year)
-            @players[@year][player] = {} unless @players[@year].key?(player)
-            @players[@year][player][col_name] = value
+          # binding.pry
+          table_element.search('tbody tr').each do |row|
+            player = row.search('th').first.text.encode('UTF-8', 'binary', invalid: :replace, undef: :replace).strip
+            next if player.match?(/\d/)
+
+            # headers is OK
+            headers.each do |index, col|
+              player_row = row.search('td')[index]
+              value = player_row.text.strip
+              col_name = player_row.attributes["data-stat"].value
+
+              @players[@year] = {} unless @players.key?(@year)
+              @players[@year][player] = {} unless @players[@year].key?(player)
+              @players[@year][player][col_name] = value
+            end
           end
         end
       end
-    end
 
-    # checks previous seasons
-    prev_season_url = doc.search('.prevnext a').first.attributes['href'].value
-    unless prev_season_url.match?(/#{YEAR_BEG}/)
-      puts "Scraping: #{prev_season_url}"
-      @players = ScrapeTeamPlayers.new(url: prev_season_url, players: @players).call
+      # checks previous seasons
+      # prev_season_url = doc.search('.prevnext a').first.attributes['href'].value
+      # unless prev_season_url.match?(/#{YEAR_BEG}/)
+      #   puts "Scraping: #{prev_season_url}"
+      #   @players = ScrapeTeamPlayers.new(url: prev_season_url, players: @players).call
+      # end
+    rescue OpenURI::HTTPError => ex
+      puts
+      puts "**** HTTP Error: #{ex} *****"
+      puts
     end
 
     @players
@@ -81,4 +95,4 @@ class ScrapeTeamPlayers
 end
 
 # "Test:"
-# p ScrapeTeamPlayers.new.call
+p ScrapeTeamPlayers.new.call
