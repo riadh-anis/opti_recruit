@@ -4,7 +4,11 @@ require 'csv'
 require_relative 'scrape_teams'
 require_relative 'scrape_team_players'
 
+YEAR_END = 2022
+YEAR_BEG = 2017
 @players = {}
+
+
 # url = 'https://fbref.com/en/'
 # html = URI.open(url).read
 html = File.open('scraper/home.html')
