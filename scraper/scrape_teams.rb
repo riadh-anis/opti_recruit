@@ -17,7 +17,7 @@ class ScrapeTeams
       url = link.attributes['href'].value
       puts "Scraping: #{link.text.strip}"
       @players = ScrapeTeamPlayers.new(url: url, players: @players).call
-      sleep(rand(5..10)) # don't get block plz
+      # sleep(rand(5..10)) # don't get block plz
     end
     @players
   end

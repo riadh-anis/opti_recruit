@@ -21,7 +21,7 @@ class FbrefScrape
       url = comp.attributes['href'].value
       p url
       @players = ScrapeTeams.new(url: url, players: @players).call
-      sleep(3)
+      # sleep(3)
     end
 
     p @players

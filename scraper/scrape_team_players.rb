@@ -29,7 +29,7 @@ class ScrapeTeamPlayers
   end
 
   def call
-    sleep(rand(1..3)) # hoping not to get blocked
+    # sleep(rand(1..3)) # hoping not to get blocked
     begin
       # html = File.open('scraper/test.html', "encoding" => 'utf-8')
       # html = URI.open(base_url + url).read
