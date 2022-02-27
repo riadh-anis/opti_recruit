@@ -7,31 +7,39 @@ require 'csv'
 
 class FbrefScrape
   def initialize
-    @players = {}
+    # @players = {}
   end
 
-  def call
-    # url = 'https://fbref.com/en/'
-    # html = URI.open(url).read
-    html = File.open('scraper/home.html')
-    doc = Nokogiri::HTML.parse(html)
+  # calling each league individually now
+  # def call
+  #   # url = 'https://fbref.com/en/'
+  #   # html = URI.open(url).read
+  #   html = File.open('scraper/home.html')
+  #   doc = Nokogiri::HTML.parse(html)
 
-    doc.search('#leagues_primary div div p a')[1..-1].each do |comp|
-      comp_name = comp.text.strip
-      puts "Scraping #{comp_name}..."
-      url = comp.attributes['href'].value
-      @players = ScrapeTeams.new(url: url, players: @players).call
-      # sleep(3)
-    end
+  #   doc.search('#leagues_primary div div p a')[1..-1].each do |comp|
+  #     comp_name = comp.text.strip
+  #     puts "Scraping #{comp_name}..."
+  #     url = comp.attributes['href'].value
+  #     @players = ScrapeTeams.new(url: url, players: @players).call
+  #     # sleep(3)
+  #   end
 
-    p @players
-    save_to_csv
-  end
+  #   p @players
+  #   save_to_csv
+  # end
 
   def save_to_csv
+    headers = []
+    @players.each do |year, players|
+      players.each do |name, info|
+        headers << info.keys
+      end
+      headers = headers.uniq
+    end
     @players.each do |year, players|
       CSV.open("raw_data/fbref/fbref_#{year}.csv", 'wb') do |csv|
-        csv << ['name'] + players.first[1].keys
+        csv << ['name'] + headers
         players.each do |name, info|
           csv << [name] + info.values
         end
@@ -40,7 +48,7 @@ class FbrefScrape
   end
 
   def load_from_csv
-    [2018, 2019, 2020, 2021].each do |year|
+    %w[2018 2019 2020 2021].each do |year|
       filepath = "raw_data/fbref/fbref_#{year}.csv"
       next unless File.exist?(filepath)
 

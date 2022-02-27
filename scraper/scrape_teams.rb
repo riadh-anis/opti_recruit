@@ -1,3 +1,4 @@
+require 'pry-byebug'
 require_relative 'fbref_scrape'
 YEAR_END = 2022
 YEAR_BEG = 2016
@@ -9,10 +10,11 @@ class ScrapeTeams < FbrefScrape
     @url = attrs[:url] || '/en/comps/9/10728/2020-2021-Premier-League-Stats'
     @base_url = 'https://fbref.com'
     @players = attrs[:players] || {}
+    load_from_csv
+    # binding.pry
   end
 
   def call
-    load_from_csv
     # html = File.open('scraper/league.html')
     begin
       html = URI.open(base_url + url).read
@@ -21,8 +23,11 @@ class ScrapeTeams < FbrefScrape
       puts "#{title}..."
 
       table = doc.search('.stats_table').first
+
       table.search('tbody tr').each do |row|
         link = row.search('a').first
+        next unless link
+
         url = link.attributes['href'].value
         unless title.match?(/#{YEAR_END}/)
           puts "Scraping: #{link.text.strip}"
@@ -38,11 +43,11 @@ class ScrapeTeams < FbrefScrape
         puts "Scraping: #{prev_season_url}"
         @players = ScrapeTeams.new(url: prev_season_url, players: @players).call
       end
+      # p @players
+      save_to_csv
     rescue => e
       puts "**** HTTP Error: #{e.inspect} *****"
       puts
     end
-    # p @players
-    save_to_csv
   end
 end
