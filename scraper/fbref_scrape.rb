@@ -33,7 +33,9 @@ class FbrefScrape
     headers = []
     @players.each do |year, players|
       players.each do |name, info|
-        headers << info.keys
+        info.keys.each do |key|
+          headers << key
+        end
       end
       headers = headers.uniq
     end
@@ -41,7 +43,7 @@ class FbrefScrape
       CSV.open("raw_data/fbref/fbref_#{year}.csv", 'wb') do |csv|
         csv << ['name'] + headers
         players.each do |name, info|
-          csv << [name] + info.values
+          csv << [name] + headers.map { |hdr| info[hdr] }
         end
       end
     end
@@ -52,11 +54,11 @@ class FbrefScrape
       filepath = "raw_data/fbref/fbref_#{year}.csv"
       next unless File.exist?(filepath)
 
-      CSV.foreach(filepath, headers: :first_row, header_converters: :symbol) do |row|
+      CSV.foreach(filepath, headers: :first_row) do |row|
         @players[year] = {} unless @players.key?(year)
-        player = row[:name].to_s
+        player = row['name'].to_s
 
-        @players[year][player] = row.to_h.except(:name)
+        @players[year][player] = row.to_h.except('name')
       end
     end
     @players

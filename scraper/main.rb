@@ -2,7 +2,7 @@
 require_relative 'scrape_teams'
 require_relative 'scrape_team_players'
 
-ScrapeTeams.new(url: '/en/comps/9/Premier-League-Stats').call
+# ScrapeTeams.new(url: '/en/comps/9/Premier-League-Stats').call
 # ScrapeTeams.new(url: '/en/comps/13/Ligue-1-Stats').call
 # ScrapeTeams.new(url: '/en/comps/20/Bundesliga-Stats').call
 # ScrapeTeams.new(url: '/en/comps/11/Serie-A-Stats').call
@@ -27,4 +27,3 @@ ScrapeTeams.new(url: '/en/comps/9/Premier-League-Stats').call
 # ScrapeTeams.new(url: '/en/comps/29/Allsvenskan-Stats').call
 # ScrapeTeams.new(url: '/en/comps/26/Super-Lig-Stats').call
 # ScrapeTeams.new(url: '/en/comps/39/Ukrainian-Premier-League-Stats').call
-# ScrapeTeams.new(url: '/en/comps/10/Championship-Stats').call

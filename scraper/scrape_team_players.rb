@@ -74,7 +74,7 @@ class ScrapeTeamPlayers
 
               @players[@year] = {} unless @players.key?(@year)
               @players[@year][player] = {} unless @players[@year].key?(player)
-              @players[@year][player][col_name] = value
+              @players[@year][player][col_name.to_s] = value
             end
           end
         end
