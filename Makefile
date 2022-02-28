@@ -56,5 +56,5 @@ pypi:
 
 download_fbref:
 	@rm -rf app/assets/stylesheets
-	@curl -L https://github.com/riadh-anis/opti_recruit/hbref_scraped_data.zip > hbref_scraped_data.zip
-	@unzip hbref_scraped_data.zip -d raw_data/fbref && rm hbref_scraped_data.zip && mv fbref_scraped_2017.csv raw_data/fbref && mv fbref_scraped_2018.csv raw_data/fbref && mv fbref_scraped_2019.csv raw_data/fbref && mv fbref_scraped_2020.csv raw_data/fbref && mv fbref_scraped_2021.csv
+	@curl -L https://github.com/riadh-anis/opti_recruit/raw/fbref-scrape/fbref_scraped_data.zip > fbref_scraped_data.zip
+	@unzip fbref_scraped_data.zip -d raw_data/fbref && rm fbref_scraped_data.zip
