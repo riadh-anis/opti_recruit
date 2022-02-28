@@ -55,6 +55,5 @@ pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
 
 download_fbref:
-	@rm -rf app/assets/stylesheets
-	@curl -L https://github.com/riadh-anis/opti_recruit/raw/fbref-scrape/fbref_scraped_data.zip > fbref_scraped_data.zip
-	@unzip fbref_scraped_data.zip -d raw_data/fbref && rm fbref_scraped_data.zip
+	@curl -L https://github.com/riadh-anis/opti_recruit/raw/fbref-scrape/fbref_scraped.zip > fbref_scraped.zip
+	@unzip fbref_scraped.zip -d raw_data/fbref && rm fbref_scraped.zip
