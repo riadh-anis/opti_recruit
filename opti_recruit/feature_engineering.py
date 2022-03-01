@@ -69,3 +69,5 @@ def feature_engineering(df):
         frame['is_bench'] = frame['is_bench'].astype('category')
         frame['player_pos'] = frame['player_pos'].astype('category')
         frame['new_nationality'] = frame['new_nationality'].astype('category')
+
+    return frame
