@@ -8,36 +8,62 @@ from sklearn.pipeline import Pipeline,make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 
-def func(x):
-    res=np.log(x)
-    return res
+#from opti_recruit.data import clean_data
+#from opti_recruit.feature_engineering import add_features
 
-def set_pipeline():
-    """defines the pipeline as a class attribute"""
-    SimpleImputer.get_feature_names_out = (lambda self,
-                                            names=None:
-                                                self.feature_names_in_)
+# def func(x):
+#     res=np.log(x)
+#     return res
 
-    num_transformer = make_pipeline(SimpleImputer(strategy='mean'),
-                                    StandardScaler())
-    num_col = make_column_selector(dtype_include=['int64','float64'])
+class Trainer(object):
+    def __init__(self, X, y):
+        """
+            X: pandas DataFrame
+            y: pandas Series
+        """
+        self.pipeline = None
+        self.X = X
+        self.y = np.log(y)
 
-    cat_transformer = make_pipeline(SimpleImputer(strategy = 'most_frequent')
-                            ,OneHotEncoder(handle_unknown='ignore', sparse=True))
+    def set_pipeline(self):
+        """defines the pipeline as a class attribute"""
+        SimpleImputer.get_feature_names_out = (lambda self,
+                                                names=None:
+                                                    self.feature_names_in_)
 
-    cat_col = make_column_selector(dtype_include=['object','bool','category'])
+        num_transformer = make_pipeline(SimpleImputer(strategy='mean'),
+                                        StandardScaler())
+        num_col = make_column_selector(dtype_include=['int64','float64'])
 
-    preproc = make_column_transformer(
-        (num_transformer, make_column_selector(dtype_include=['float64','int64'])),
-        (cat_transformer, cat_col),
-        remainder='passthrough')
+        cat_transformer = make_pipeline(SimpleImputer(strategy = 'most_frequent')
+                                ,OneHotEncoder(handle_unknown='ignore', sparse=True))
 
-    regressor=LinearRegression()
+        cat_col = make_column_selector(dtype_include=['object','bool','category'])
 
-    regr=TransformedTargetRegressor(regressor=regressor,
-                                    func=func,
-                                    transformer=preproc)
-    return regr
+        preproc = make_column_transformer(
+            (num_transformer, num_col),
+            (cat_transformer, cat_col),
+            remainder='passthrough')
+
+
+        self.pipe = make_pipeline(preproc, LinearRegression())
+
+        # self.pipe=TransformedTargetRegressor(regressor=regressor,
+        #                                 #func=func,
+        #                                 transformer=preproc)
+        #regressor=LinearRegression()
+        return self.pipe
+
+    def run(self):
+        self.set_pipeline()
+        self.pipe.fit(self.X,self.y)
+
+    def predict(self,X_test):
+        raw_y=self.pipe.predict(X_test)
+        y=np.exp(raw_y)
+        return y
+
+
 
 # class Trainer(object):
 #     def __init__(self, X, y):
