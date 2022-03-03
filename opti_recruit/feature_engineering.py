@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from opti_recruit.data import load_data
+from opti_recruit.data import get_data
 
 def is_bench(d):
     if d in ("SUB", "RES", ""):
@@ -45,7 +45,7 @@ def prefered_position(positions):
     return a[0]
 
 
-def feature_engineering(df):
+def add_features(df):
     to_drop = [
         'club_logo_url','nation_flag_url','club_flag_url','nation_logo_url','player_face_url','dob','player_url',
         'real_face','nation_jersey_number','nation_position','club_loaned_from','long_name','player_url',
@@ -55,19 +55,18 @@ def feature_engineering(df):
         'goalkeeping_positioning' ,'goalkeeping_reflexes', 'goalkeeping_speed'
         ]
 
-    clean_df = df.drop(to_drop,axis = 1)
+    df = df.drop(to_drop,axis = 1)
 
-    for frame in dfs:
-        frame['is_bench'] = frame['club_position'].apply(is_bench)
-        frame['potential_diff'] = frame['potential'] - frame['overall']
-        frame[['att_rate', 'def_rate']] = frame['work_rate'].str.split('/', 1, expand=True)
-        frame['age_bin'] = frame['age'].apply(age_bins)
-        frame['prefered_pos'] = frame['player_positions'].apply(prefered_position)
-        frame['player_pos'] = frame['prefered_pos'].apply(play_pos)
-        frame['new_nationality'] = frame['nationality_name'].apply(top_nationality)
-        frame['prefered_pos'] = frame['prefered_pos'].astype('category')
-        frame['is_bench'] = frame['is_bench'].astype('category')
-        frame['player_pos'] = frame['player_pos'].astype('category')
-        frame['new_nationality'] = frame['new_nationality'].astype('category')
+    df['is_bench'] = df['club_position'].apply(is_bench)
+    df['potential_diff'] = df['potential'] - df['overall']
+    df[['att_rate', 'def_rate']] = df['work_rate'].str.split('/', 1, expand=True)
+    df['age_bin'] = df['age'].apply(age_bins)
+    df['prefered_pos'] = df['player_positions'].apply(prefered_position)
+    df['player_pos'] = df['prefered_pos'].apply(play_pos)
+    df['new_nationality'] = df['nationality_name'].apply(top_nationality)
+    df['prefered_pos'] = df['prefered_pos'].astype('category')
+    df['is_bench'] = df['is_bench'].astype('category')
+    df['player_pos'] = df['player_pos'].astype('category')
+    df['new_nationality'] = df['new_nationality'].astype('category')
 
-    return frame
+    return df
