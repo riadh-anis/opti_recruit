@@ -58,3 +58,11 @@ download_fbref:
 	@curl -L https://github.com/riadh-anis/opti_recruit/blob/master/fbref_scraped.zip?raw=true > fbref_scraped.zip
 	@mkdir raw_data/fbref
 	@unzip fbref_scraped.zip -d raw_data/fbref && rm fbref_scraped.zip
+
+
+
+# ----------------------------------
+#      Prediction API
+# ----------------------------------
+run_api:
+	uvicorn api.fast:app --reload  # load web server with code autoreload
