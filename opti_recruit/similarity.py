@@ -59,7 +59,10 @@ def get_similarity_dataframe(df):
 
     return similarities
 
-def cosine_recommendation(df,player):
+def cosine_recommendation(player):
+
+    input_df = get_data()[22]
+    df = fe.add_features(input_df)
     index = get_index(df,player)
     similarities = get_similarity_dataframe(df)
     norm_sim_array= np.sort(normalize(similarities[index,:]))[-11:][::-1][1:]

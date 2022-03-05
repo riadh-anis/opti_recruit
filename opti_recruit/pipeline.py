@@ -1,5 +1,6 @@
 
 import numpy as np
+import joblib
 from sklearn.metrics import mean_squared_error
 from sklearn.compose import ColumnTransformer,make_column_selector,make_column_transformer,TransformedTargetRegressor
 from sklearn.linear_model import LinearRegression
@@ -7,6 +8,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline,make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
+
+PATH_TO_LOCAL_MODEL = 'model.joblib'
 
 class Trainer(object):
     def __init__(self, X, y):
@@ -17,7 +20,6 @@ class Trainer(object):
         self.pipeline = None
         self.X = X
         self.y = np.log(y)
-
 
     def set_pipeline(self):
         """defines the pipeline as a class attribute"""
@@ -34,11 +36,6 @@ class Trainer(object):
 
         cat_col = make_column_selector(dtype_include=['object','bool','category'])
 
-        preproc = make_column_transformer(
-            (num_transformer, make_column_selector(dtype_include=['float64','int64'])),
-            (cat_transformer, cat_col),
-            remainder='passthrough')
-
         regressor=LinearRegression()
 
         preproc = make_column_transformer(
@@ -49,11 +46,9 @@ class Trainer(object):
         self.pipeline = make_pipeline(preproc, regressor)
         return self.pipeline
 
-
     def run(self):
         self.set_pipeline()
         self.pipeline.fit(self.X, self.y)
-
 
     def predict(self, X_test):
         y_pred = self.pipeline.predict(X_test)
@@ -64,8 +59,15 @@ class Trainer(object):
         rmse = np.sqrt(mean_squared_error(y_pred, y_test))
         return round(rmse, 2)
 
+    def save_model_locally(self):
+        """Save the model into a .joblib format"""
+        joblib.dump(self.pipeline, PATH_TO_LOCAL_MODEL)
+        # self.predict(X) ## dump the final predicted values into json
+        print(colored("model.joblib saved locally", "green"))
 
-
+    def load_model(self):
+        pipeline = joblib.load(PATH_TO_LOCAL_MODEL)
+        return pipeline
 
 # class Trainer(object):
 #     def __init__(self, X, y):
@@ -94,10 +96,7 @@ class Trainer(object):
 #     self.mlflow_log_metric("rmse", rmse)
 #     return round(rmse, 2)
 
-# def save_model_locally(self):
-#     """Save the model into a .joblib format"""
-#     joblib.dump(self.pipeline, 'model.joblib')
-#     print(colored("model.joblib saved locally", "green"))
+
 
 # MLFlow methods
     # @memoized_property
