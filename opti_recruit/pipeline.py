@@ -8,36 +8,64 @@ from sklearn.pipeline import Pipeline,make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 
-def func(x):
-    res=np.log(x)
-    return res
+class Trainer(object):
+    def __init__(self, X, y):
+        """
+            X: pandas DataFrame
+            y: pandas Series
+        """
+        self.pipeline = None
+        self.X = X
+        self.y = np.log(y)
 
-def set_pipeline():
-    """defines the pipeline as a class attribute"""
-    SimpleImputer.get_feature_names_out = (lambda self,
-                                            names=None:
-                                                self.feature_names_in_)
 
-    num_transformer = make_pipeline(SimpleImputer(strategy='mean'),
-                                    StandardScaler())
-    num_col = make_column_selector(dtype_include=['int64','float64'])
+    def set_pipeline(self):
+        """defines the pipeline as a class attribute"""
+        SimpleImputer.get_feature_names_out = (lambda self,
+                                                names=None:
+                                                    self.feature_names_in_)
 
-    cat_transformer = make_pipeline(SimpleImputer(strategy = 'most_frequent')
-                            ,OneHotEncoder(handle_unknown='ignore', sparse=True))
+        num_transformer = make_pipeline(SimpleImputer(strategy='mean'),
+                                        StandardScaler())
+        num_col = make_column_selector(dtype_include=['int64','float64'])
 
-    cat_col = make_column_selector(dtype_include=['object','bool','category'])
+        cat_transformer = make_pipeline(SimpleImputer(strategy = 'most_frequent')
+                                ,OneHotEncoder(handle_unknown='ignore', sparse=True))
 
-    preproc = make_column_transformer(
-        (num_transformer, make_column_selector(dtype_include=['float64','int64'])),
-        (cat_transformer, cat_col),
-        remainder='passthrough')
+        cat_col = make_column_selector(dtype_include=['object','bool','category'])
 
-    regressor=LinearRegression()
+        preproc = make_column_transformer(
+            (num_transformer, make_column_selector(dtype_include=['float64','int64'])),
+            (cat_transformer, cat_col),
+            remainder='passthrough')
 
-    regr=TransformedTargetRegressor(regressor=regressor,
-                                    func=func,
-                                    transformer=preproc)
-    return regr
+        regressor=LinearRegression()
+
+        preproc = make_column_transformer(
+            (num_transformer, num_col),
+            (cat_transformer, cat_col),
+            remainder='passthrough')
+
+        self.pipeline = make_pipeline(preproc, regressor)
+        return self.pipeline
+
+
+    def run(self):
+        self.set_pipeline()
+        self.pipeline.fit(self.X, self.y)
+
+
+    def predict(self, X_test):
+        y_pred = self.pipeline.predict(X_test)
+        return np.exp(y_pred)
+
+    def evaluate(self, y_pred, y_test):
+        """evaluates the pipeline on df_test and return the RMSE"""
+        rmse = np.sqrt(mean_squared_error(y_pred, y_test))
+        return round(rmse, 2)
+
+
+
 
 # class Trainer(object):
 #     def __init__(self, X, y):
