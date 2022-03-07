@@ -69,12 +69,34 @@ def get_similarity_matrix():
     with open(r'similarity_matrix.pickle', 'wb') as file:
         pickle.dump(similarities, file)
 
+def get_reco(index,sim_mat):
+    index_search = index
+    list_res=[]
+    for i in range(0,10):
+        d = {
+            'index_search' : index_search,
+            'index' : sim_mat.reco_player_index[0][i],
+            'score': sim_mat.scores[0][i]
+            }
+        list_res.append(d)
+    reco_df = pd.DataFrame(list_res)
+    return reco_df
+
+def get_list_dict(df):
+    list_res = []
+    for i in range(0,len(df)):
+        d = {
+            'sofifa_id': int(df.iloc[i]['sofifa_id']),
+            'score': df.iloc[i]['score'],
+            'index' : i
+            }
+        list_res.append(d)
+    return list_res
+
 def cosine_recommendation(player,sim_mat,df):
 
     index = get_index(df,player)
-    norm_sim_array= np.sort(normalize(sim_mat[index,:]))[-11:][::-1][1:]
-    index_matrix = sim_mat[index,:].argsort()[-11:][::-1][1:]
-    dict_simili = {'index_player': index_matrix,'score':norm_sim_array}
-    reco_df = pd.DataFrame(dict_simili).set_index('index_player')
+    reco_df = get_reco(index,sim_mat)
     reco_df['sofifa_id'] = df.iloc[reco_df.index]['sofifa_id']
-    return reco_df
+    res = get_list_dict(reco_df)
+    return res
