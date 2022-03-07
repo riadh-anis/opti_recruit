@@ -1,6 +1,6 @@
 import pytz
 import pandas as pd
-import joblib
+import joblib,pickle
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,8 +21,10 @@ app.add_middleware(
 )
 
 dfs = get_data()
+df22 = dfs[22]
 
-
+with open("similarity_matrix.pickle", 'rb') as file:
+    sim_matrix = pickle.load(file)
 
 @app.get("/")
 def index():
@@ -31,7 +33,7 @@ def index():
 
 @app.get("/similarities")
 def compute_player_similarity(player_name):
-    df = cosine_recommendation(player_name)
+    df = cosine_recommendation(player_name,sim_matrix,df22)
     return df.reset_index().to_dict()
 
 # @app.get("/predict/marketvalue")

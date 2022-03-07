@@ -2,6 +2,7 @@ import opti_recruit.feature_engineering as fe
 import opti_recruit.get_team_features as gtf
 import pandas as pd
 import numpy as np
+import pickle
 from sklearn.pipeline import Pipeline,make_pipeline,make_union
 from sklearn.compose import make_column_transformer,make_column_selector
 from sklearn.impute import SimpleImputer
@@ -9,6 +10,7 @@ from sklearn.preprocessing import StandardScaler,OneHotEncoder
 from opti_recruit.data import get_data, clean_data
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.neighbors import NearestNeighbors
+
 
 
 
@@ -59,14 +61,19 @@ def get_similarity_dataframe(df):
 
     return similarities
 
-def cosine_recommendation(player):
 
+def get_similarity_matrix():
     input_df = get_data()[22]
     df = fe.add_features(input_df)
-    index = get_index(df,player)
     similarities = get_similarity_dataframe(df)
-    norm_sim_array= np.sort(normalize(similarities[index,:]))[-11:][::-1][1:]
-    index_matrix = similarities[index,:].argsort()[-11:][::-1][1:]
+    with open(r'similarity_matrix.pickle', 'wb') as file:
+        pickle.dump(similarities, file)
+
+def cosine_recommendation(player,sim_mat,df):
+
+    index = get_index(df,player)
+    norm_sim_array= np.sort(normalize(sim_mat[index,:]))[-11:][::-1][1:]
+    index_matrix = sim_mat[index,:].argsort()[-11:][::-1][1:]
     dict_simili = {'index_player': index_matrix,'score':norm_sim_array}
     reco_df = pd.DataFrame(dict_simili).set_index('index_player')
     reco_df['sofifa_id'] = df.iloc[reco_df.index]['sofifa_id']
