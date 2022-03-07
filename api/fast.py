@@ -33,8 +33,8 @@ def index():
 
 @app.get("/similarities")
 def compute_player_similarity(player_name):
-    df = cosine_recommendation(player_name,sim_matrix,df22)
-    return df.reset_index().to_dict()
+    my_reco_list = cosine_recommendation(player_name,sim_matrix,df22)
+    return my_reco_list
 
 # @app.get("/predict/marketvalue")
 # def predict_marketvalue(player_id):
