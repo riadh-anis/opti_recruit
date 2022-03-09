@@ -67,20 +67,20 @@ def get_similarity_matrix():
     input_df = get_data()[22]
     df = fe.add_features(input_df)
     similarities = get_similarity_dataframe(df)
-    with open(r'similarity_matrix.pickle', 'wb') as file:
+    with open(r'similarity_matrix_v2.pickle', 'wb') as file:
         pickle.dump(similarities, file)
 
 def get_reco(index,sim_mat):
     index_search = index
     list_res=[]
-    for i in range(0,10):
+    for i in range(0,100):
         d = {
             'index_search' : index_search,
             'index' : sim_mat.reco_player_index[0][i],
             'score': sim_mat.scores[0][i]
             }
         list_res.append(d)
-    reco_df = pd.DataFrame(list_res)
+    reco_df = pd.DataFrame(list_res).set_index('index')
     return reco_df
 
 def get_list_dict(df):
@@ -99,11 +99,12 @@ def filter_params(df, age_min, age_max, value_min, value_max, position):
     df = df[(df['value_eur'] >= value_min) & (df['value_eur'] <= value_max)]
     if position and position != 'All':
         df = df[df['player_pos'] == position]
-    return df
+    return list(df.sofifa_id)
 
 def cosine_recommendation(player_id, sim_mat, df):
     index = get_index(df, player_id)
     reco_df = get_reco(index, sim_mat)
     reco_df['sofifa_id'] = df.iloc[reco_df.index]['sofifa_id']
-    res = get_list_dict(reco_df)
+    # res = get_list_dict(reco_df)
+    res = reco_df
     return res
