@@ -4,7 +4,7 @@ import joblib,pickle
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from opti_recruit.similarity import cosine_recommendation
+from opti_recruit.similarity import cosine_recommendation, filter_params
 from opti_recruit.pipeline import Trainer
 from opti_recruit.data import get_api_data
 
@@ -32,9 +32,9 @@ def index():
 
 
 @app.get("/similarities")
-def compute_player_similarity(player_id):
-
-    my_reco_list = cosine_recommendation(player_id,sim_matrix,df22)
+def compute_player_similarity(player_id, age_min=1, age_max=99, value_min=0, value_max=999999999, position=None):
+    df_22_filtered = filter_params(df22, age_min, age_max, value_min, value_max, position)
+    my_reco_list = cosine_recommendation(player_id, sim_matrix, df_22_filtered)
     return my_reco_list
 
 # @app.get("/predict/marketvalue")
