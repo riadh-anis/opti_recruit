@@ -7,15 +7,16 @@ from sklearn.pipeline import Pipeline,make_pipeline,make_union
 from sklearn.compose import make_column_transformer,make_column_selector
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler,OneHotEncoder
-from opti_recruit.data import get_data, clean_data
+from opti_recruit.data import get_data, clean_data, get_api_data
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.neighbors import NearestNeighbors
 
 
 
 
-def get_index(df,player):
-    return df[df['short_name']==player].index.tolist()[0]
+def get_index(df,player_id):
+    print(player_id)
+    return df[df['sofifa_id']==int(player_id)].index.tolist()[0]
 
 def normalize(array):
     return np.array([round(num, 2) for num in (array - min(array))*100/(max(array)-min(array))])
@@ -93,10 +94,16 @@ def get_list_dict(df):
         list_res.append(d)
     return list_res
 
-def cosine_recommendation(player,sim_mat,df):
+def filter_params(df, age_min, age_max, value_min, value_max, position):
+    df = df[(df['age'] >= age_min) & (df['age'] <= age_max)]
+    df = df[(df['value_eur'] >= value_min) & (df['value_eur'] <= value_max)]
+    if position and position != 'All':
+        df = df[df['player_pos'] == position]
+    return df
 
-    index = get_index(df,player)
-    reco_df = get_reco(index,sim_mat)
+def cosine_recommendation(player_id, sim_mat, df):
+    index = get_index(df, player_id)
+    reco_df = get_reco(index, sim_mat)
     reco_df['sofifa_id'] = df.iloc[reco_df.index]['sofifa_id']
     res = get_list_dict(reco_df)
     return res
