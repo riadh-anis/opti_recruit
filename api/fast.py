@@ -6,7 +6,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from opti_recruit.similarity import cosine_recommendation, filter_params
 from opti_recruit.pipeline import Trainer
-from opti_recruit.data import get_api_data
+from opti_recruit.value_predict import prediction
+from opti_recruit.data import get_api_data, get_data
 
 PATH_TO_LOCAL_MODEL = 'model.joblib'
 
@@ -36,6 +37,11 @@ def compute_player_similarity(player_id, age_min=1, age_max=99, value_min=0, val
     df_22_filtered = filter_params(df22, int(age_min), int(age_max), int(value_min), int(value_max), position)
     my_reco_list = cosine_recommendation(player_id, sim_matrix, df_22_filtered)
     return my_reco_list
+
+@app.get("/value")
+def get_2023_value(sofifaid):
+    value_lst=prediction()
+    return value_lst
 
 # @app.get("/predict/marketvalue")
 # def predict_marketvalue(player_id):
