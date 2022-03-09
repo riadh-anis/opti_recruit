@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from opti_recruit.similarity import cosine_recommendation
 from opti_recruit.pipeline import Trainer
-from opti_recruit.data import get_data
+from opti_recruit.data import get_api_data
 
 PATH_TO_LOCAL_MODEL = 'model.joblib'
 
@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-dfs = get_data()
+dfs = get_api_data()
 df22 = dfs[22]
 
 with open("similarity_matrix.pickle", 'rb') as file:
@@ -32,8 +32,9 @@ def index():
 
 
 @app.get("/similarities")
-def compute_player_similarity(player_name):
-    my_reco_list = cosine_recommendation(player_name,sim_matrix,df22)
+def compute_player_similarity(player_id):
+
+    my_reco_list = cosine_recommendation(player_id,sim_matrix,df22)
     return my_reco_list
 
 # @app.get("/predict/marketvalue")
