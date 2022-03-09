@@ -33,7 +33,7 @@ def index():
 
 @app.get("/similarities")
 def compute_player_similarity(player_id, age_min=1, age_max=99, value_min=0, value_max=999999999, position=None):
-    df_22_filtered = filter_params(df22, age_min, age_max, value_min, value_max, position)
+    df_22_filtered = filter_params(df22, int(age_min), int(age_max), int(value_min), int(value_max), position)
     my_reco_list = cosine_recommendation(player_id, sim_matrix, df_22_filtered)
     return my_reco_list
 
