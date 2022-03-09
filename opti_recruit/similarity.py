@@ -101,8 +101,7 @@ def filter_params(df, age_min, age_max, value_min, value_max, position):
         df = df[df['player_pos'] == position]
     return df
 
-def cosine_recommendation(player_id, sim_mat, df, age_min, age_max, value_min, value_max, position):
-    df = filter_params(df, age_min, age_max, value_min, value_max, position)
+def cosine_recommendation(player_id, sim_mat, df):
     index = get_index(df, player_id)
     reco_df = get_reco(index, sim_mat)
     reco_df['sofifa_id'] = df.iloc[reco_df.index]['sofifa_id']
