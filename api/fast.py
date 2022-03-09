@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from opti_recruit.similarity import cosine_recommendation
 from opti_recruit.pipeline import Trainer
 from opti_recruit.data import get_data
+from opti_recruit.value_predict import prediction
 
 PATH_TO_LOCAL_MODEL = 'model.joblib'
 
@@ -35,6 +36,11 @@ def index():
 def compute_player_similarity(player_name):
     my_reco_list = cosine_recommendation(player_name,sim_matrix,df22)
     return my_reco_list
+
+@app.get("/value")
+def get_2023_value(sofifaid):
+    value_lst=prediction()
+    return value_lst
 
 # @app.get("/predict/marketvalue")
 # def predict_marketvalue(player_id):
