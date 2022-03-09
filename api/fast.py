@@ -32,9 +32,8 @@ def index():
 
 
 @app.get("/similarities")
-def compute_player_similarity(player_id):
-
-    my_reco_list = cosine_recommendation(player_id,sim_matrix,df22)
+def compute_player_similarity(player_id, age_min=1, age_max=99, value_min=0, value_max=999999999, position=None):
+    my_reco_list = cosine_recommendation(player_id, sim_matrix, df22, age_min, age_max, value_min, value_max, position)
     return my_reco_list
 
 # @app.get("/predict/marketvalue")
