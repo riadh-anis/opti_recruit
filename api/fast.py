@@ -47,11 +47,7 @@ def compute_player_similarity(player_id, age_min=1, age_max=99, value_min=0, val
 
     return get_list_dict(my_reco_filt)
 
-@app.get("/value")
-def get_2023_value(sofifaid):
-    value_23=value_show(sofifaid)
-    return value_23
-
+# @app.get("/value")
 # def get_2023_value(sofifaid):
 #     value_lst=prediction()
 #     return value_lst
