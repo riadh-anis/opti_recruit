@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from opti_recruit.similarity import cosine_recommendation, filter_params,get_list_dict
 from opti_recruit.pipeline import Trainer
-from opti_recruit.value_predict import prediction
+from opti_recruit.value_predict import prediction,value_show
 from opti_recruit.data import get_api_data, get_data
 
 PATH_TO_LOCAL_MODEL = 'model.joblib'
@@ -49,8 +49,12 @@ def compute_player_similarity(player_id, age_min=1, age_max=99, value_min=0, val
 
 @app.get("/value")
 def get_2023_value(sofifaid):
-    value_lst=prediction()
-    return value_lst
+    value_23=value_show(sofifaid)
+    return value_23
+
+# def get_2023_value(sofifaid):
+#     value_lst=prediction()
+#     return value_lst
 
 # @app.get("/predict/marketvalue")
 # def predict_marketvalue(player_id):
