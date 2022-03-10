@@ -77,8 +77,8 @@ def get_reco(index,sim_mat):
     for i in range(0,length):
         d = {
             'index_search' : index_search,
-            'index' : sim_mat.reco_player_index[0][i],
-            'score': sim_mat.scores[0][i]
+            'index' : sim_mat.reco_player_index[index_search][i],
+            'score': sim_mat.scores[index_search][i]
             }
         list_res.append(d)
     reco_df = pd.DataFrame(list_res).set_index('index')
