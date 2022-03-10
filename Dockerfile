@@ -2,7 +2,7 @@ FROM python:3.8.6-buster
 COPY requirements.txt /requirements.txt
 COPY api /api
 COPY opti_recruit /opti_recruit
-COPY similarity_matrix.pickle /similarity_matrix.pickle
+COPY similarity_matrix_v2.pickle /similarity_matrix_v2.pickle
 COPY raw_data /raw_data
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
