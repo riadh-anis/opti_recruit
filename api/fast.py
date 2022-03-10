@@ -45,7 +45,7 @@ def compute_player_similarity(player_id, age_min=1, age_max=99, value_min=0, val
     my_reco_filt = my_reco_df[boolean_series]
     # my_reco_list = cosine_recommendation(player_id, sim_matrix, df_22_filtered)
 
-    return get_list_dict(my_reco_df)
+    return get_list_dict(my_reco_filt)
 
 @app.get("/value")
 def get_2023_value(sofifaid):
