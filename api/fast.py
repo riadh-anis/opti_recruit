@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from opti_recruit.similarity import cosine_recommendation, filter_params,get_list_dict
 from opti_recruit.pipeline import Trainer
-from opti_recruit.value_predict import prediction
+from opti_recruit.value_predict import prediction,value_show
 from opti_recruit.data import get_api_data, get_data
 
 PATH_TO_LOCAL_MODEL = 'model.joblib'

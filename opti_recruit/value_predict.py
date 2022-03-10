@@ -40,6 +40,15 @@ def prediction():
     result=id22.join(predt).rename(columns={0: "predict_value"}).set_index('sofifa_id')
     return result
 
+# def get_index(df,player_id):
+#     print(player_id)
+#     return df[df['sofifa_id']==int(player_id)].index.tolist()[0]
+
+def value_show(player_id):
+    predict_value=prediction()
+    res_value=predict_value.loc[player_id]
+    return res_value
+
 # def id_22():
 #     #id22=dfs[22][['sofifa_id']]
 #     predt=pre_process()
