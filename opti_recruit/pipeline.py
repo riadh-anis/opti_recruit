@@ -19,7 +19,7 @@ class Trainer(object):
         """
         self.pipeline = None
         self.X = X
-        self.y = np.log(y)
+        self.y = y/100000000
 
     def set_pipeline(self):
         """defines the pipeline as a class attribute"""
@@ -52,7 +52,7 @@ class Trainer(object):
 
     def predict(self, X_test):
         y_pred = self.pipeline.predict(X_test)
-        return np.exp(y_pred)
+        return y_pred*100000000
 
     def evaluate(self, y_pred, y_test):
         """evaluates the pipeline on df_test and return the RMSE"""

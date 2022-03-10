@@ -60,7 +60,7 @@ def add_features(df):
     df['is_bench'] = df['club_position'].apply(is_bench)
     df['potential_diff'] = df['potential'] - df['overall']
     df[['att_rate', 'def_rate']] = df['work_rate'].str.split('/', 1, expand=True)
-    df['age_bin'] = df['age'].apply(age_bins)
+    df['age'] = df['age'].apply(age_bins)
     df['prefered_pos'] = df['player_positions'].apply(prefered_position)
     df['player_pos'] = df['prefered_pos'].apply(play_pos)
     df['new_nationality'] = df['nationality_name'].apply(top_nationality)
