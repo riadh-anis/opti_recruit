@@ -16,17 +16,22 @@ def pre_process():
     df22=dfs_c[22]
     #df22_d=df22.drop(columns='sofifa_id')
     df21=dfs_c[21]
+    df20=dfs_c[20]
+    frame=[df21,df20]
+    dfdf=pd.concat(frame,join='outer')
 
-    df_train=df21.merge(value_22,on='sofifa_id',how='inner')
-    df_train=df_train.fillna(df_train.mean())
+
+    df_train=dfdf.merge(value_22,on='sofifa_id',how='inner')
+    #df_train=df_train.dropna(how='any')
+    df_train=df_train.fillna(df_train.std()) # was .mean()
 
     X=df_train.drop(columns=['value_eur','sofifa_id'])
     y=df_train[['value_eur']]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y,
-                                                    test_size=0.2,
-                                                    random_state=10)
-    trainer=Trainer(X_train,y_train)
+    # X_train, X_test, y_train, y_test = train_test_split(X, y,
+    #                                                 test_size=0.3,
+    #                                                 random_state=10)
+    trainer=Trainer(X,y)
     trainer.run()
     ans=trainer.predict(df22)
 

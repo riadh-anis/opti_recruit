@@ -32,6 +32,8 @@ def features_need_value():
             'skill_moves','weak_foot','club_contract_valid_until',
             'league_level','club_team_id','weight_kg','height_cm','age','wage_eur',
             'potential','overall']
+            # 'club_team_id','league_level','club_jersey_number','attacking_heading_accuracy',
+            # 'attacking_short_passing']
 
 def clean_df_value(dfs):
     for year, df in dfs.items():
