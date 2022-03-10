@@ -4,8 +4,8 @@ def get_data(years = [17, 18, 19, 20, 21, 22]):
     """method to get the training data from the raw data"""
     dfs = {}
     for year in years:
-        dfs[year] = pd.read_csv(f'../raw_data/fifa22/players_{year}.csv', low_memory=False)
-        #dfs[year] = pd.read_csv(f'raw_data/fifa22/players_{year}.csv', low_memory=False)
+        # dfs[year] = pd.read_csv(f'../raw_data/fifa22/players_{year}.csv', low_memory=False)
+        dfs[year] = pd.read_csv(f'raw_data/fifa22/players_{year}.csv', low_memory=False)
     return dfs
 
 def get_api_data(years = [17, 18, 19, 20, 21, 22]):
