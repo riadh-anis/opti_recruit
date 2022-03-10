@@ -67,13 +67,14 @@ def get_similarity_matrix():
     input_df = get_data()[22]
     df = fe.add_features(input_df)
     similarities = get_similarity_dataframe(df)
-    with open(r'similarity_matrix_v2.pickle', 'wb') as file:
+    with open(r'similarity_matrix_v3.pickle', 'wb') as file:
         pickle.dump(similarities, file)
 
 def get_reco(index,sim_mat):
     index_search = index
     list_res=[]
-    for i in range(0,100):
+    length = len(sim_mat.reco_player_index[index_search])
+    for i in range(0,length):
         d = {
             'index_search' : index_search,
             'index' : sim_mat.reco_player_index[0][i],

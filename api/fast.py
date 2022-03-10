@@ -24,7 +24,7 @@ app.add_middleware(
 dfs = get_api_data()
 df22 = dfs[22]
 
-with open("similarity_matrix_v2.pickle", 'rb') as file:
+with open("similarity_matrix_v3.pickle", 'rb') as file:
     sim_matrix = pickle.load(file)
 
 @app.get("/")
