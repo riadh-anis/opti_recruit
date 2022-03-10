@@ -97,8 +97,8 @@ def get_list_dict(df):
 def filter_params(df, age_min, age_max, value_min, value_max, position):
     df = df[(df['age'] >= age_min) & (df['age'] <= age_max)]
     df = df[(df['value_eur'] >= value_min) & (df['value_eur'] <= value_max)]
-    if position and position != 'All':
-        df = df[df['player_pos'] == position]
+    if position != None and position != 'All':
+        df = df[df['player_positions'].str.contains(position)]
     return list(df.sofifa_id)
 
 def cosine_recommendation(player_id, sim_mat, df):
